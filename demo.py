@@ -50,8 +50,18 @@ def main():
     spikes = torch.from_numpy(spikes)
     f.close()
 
-    spikes = spikes[None, 130:171, :, :]
-
+    spikes = spikes[None, :, :, :]
+    total_t = spikes.shape[1]
+    
+    if total_t < 41:
+        print(f"Warning: Input spike data has only {total_t} time steps, which is less than required 41. Skipping.")
+        return
+    
+    # Use middle 41 time steps
+    start_idx = (total_t - 41) // 2
+    end_idx = start_idx + 41
+    spikes = spikes[:, start_idx:end_idx, :, :]
+    
     s = spikes[:, :, 0:1, 0:1]
     dwt = DWT1DForward(wave=wvlname, J=j)
     s_r = rearrange(s, 'b t h w -> b h w t')
@@ -65,7 +75,7 @@ def main():
     )
     print(model)
 
-    saved_state_dict = torch.load(logfolder + '/model_best.pt')
+    saved_state_dict = torch.load(logfolder)
     model.load_state_dict(saved_state_dict.module.state_dict())
     
     model = model.cuda()
@@ -73,7 +83,12 @@ def main():
 
     pred = model(spikes.cuda())        
     prediction = pred[0].permute(1,2,0).cpu().detach().numpy()
-    cv2.imwrite(os.path.join(logfolder, 'demo.png'), prediction * 255.0)
+    
+    # Save demo.png in the same directory as the model file
+    model_dir = os.path.dirname(logfolder)
+    output_path = os.path.join(model_dir, 'demo.png')
+    cv2.imwrite(output_path, prediction * 255.0)
+    print(f"Demo image saved to: {output_path}")
     
 
 if __name__ == '__main__':

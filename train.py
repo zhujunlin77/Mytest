@@ -208,10 +208,20 @@ def main():
                 sum_psnr = 0.0
                 sum_num = 0
                 total_time = 0
+                skipped_samples = 0
                 for i, item in enumerate(test_data_loader):
                     start_time = time.time()
 
-                    spikes = item['spikes'][:, 130:171, :, :].cuda()
+                    total_t = item['spikes'].shape[1]
+                    if total_t < 41:
+                        print(f'Warning: Sample {i} has only {total_t} time steps (< 41), skipping...')
+                        f.write(f'Warning: Sample {i} has only {total_t} time steps (< 41), skipping...\n')
+                        skipped_samples += 1
+                        continue
+
+                    start_idx = (total_t - 41) // 2
+                    end_idx = start_idx + 41
+                    spikes = item['spikes'][:, start_idx:end_idx, :, :].cuda()
                     image = item['image'].cuda()
 
                     pred = model(spikes)
