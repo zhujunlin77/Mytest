@@ -5154,3 +5154,14 @@ logs/test-db8-5-ks3/model_best.pt
 logs/test-db8-5-ks3/demo.png
 .vscode/launch.json
 __pycache__/dwt_idwt_module.cpython-38.pyc
+test_dataset/2024-07-15-14-53-45.hdf5
+logs/
+test_dataset/
+logs/WGSE-Dwt1dNet-db8-5-ks3/log.txt
+logs/WGSE-Dwt1dNet-db8-5-ks3/log.txt
+logs/WGSE-Dwt1dNet-db8-5-ks3/log.txt
+
+# DSEC数据集目录
+DSEC-main/
+DSEC-data/
+__pycache__/

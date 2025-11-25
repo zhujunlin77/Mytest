@@ -105,7 +105,7 @@ def main():
             dataset=train_set,
             batch_size=batch_size,
             shuffle=True,
-            num_workers=16,
+            num_workers=4,
             drop_last=True)
     test_data_loader = torch.utils.data.DataLoader(
         dataset=test_set,
